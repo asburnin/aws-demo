@@ -1,0 +1,49 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Transform: AWS::Serverless-2016-10-31
+Description: SAM template for notifications processor Lambda
+
+Parameters:
+  Environment:
+    Type: String
+    Description: Environment name (e.g. dev, prod)
+    Default: dev
+
+  SQSQueueArn:
+    Type: String
+    Description: ARN of the SQS queue to process notifications from
+    Default: arn:aws:sqs:us-east-1:767397853732:alexProject-UploadsNotificationQueue
+
+Resources:
+  NotificationsProcessorFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub ${Environment}-notifications-processor
+      Handler: index.handler
+      Runtime: nodejs20.x
+      CodeUri: ./
+      MemorySize: 128
+      Timeout: 10
+
+      AutoPublishAlias: live
+
+      DeploymentPreference:
+        Type: AllAtOnce
+
+      Policies:
+      - AWSLambdaBasicExecutionRole
+      - AWSLambdaSQSQueueExecutionRole
+      - AmazonSNSFullAccess
+      - AmazonSQSFullAccess
+
+      Events:
+        MySQSEvent:
+          Type: SQS
+          Properties:
+            Queue: !Ref SQSQueueArn
+            BatchSize: 10
+
+Outputs:
+  NotificationsProcessorFunction:
+    Description: Notifications Processor Lambda Function ARN
+    Value: !GetAtt NotificationsProcessorFunction.Arn

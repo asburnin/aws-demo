@@ -1,0 +1,18 @@
+version = 0.1
+
+[default]
+[default.deploy]
+[default.deploy.parameters]
+
+stack_name = "notifications-processor"
+
+resolve_s3 = false
+s3_bucket = "aleksandr-burnin-app-storage"
+s3_prefix = "notifications-processor"
+
+region = "us-east-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+parameter_overrides = "SQSQueueArn=\"arn:aws:sqs:us-east-1:767397853732:alexProject-UploadsNotificationQueue\""
+image_repositories = []
+disable_rollback = true

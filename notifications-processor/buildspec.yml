@@ -1,0 +1,29 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 20
+
+  pre_build:
+    commands:
+      - if [ -f "package.json" ] && grep -q "test" "package.json"; then npm test; fi
+
+  build:
+    commands:
+      - sam package 
+        --template-file template.yml 
+        --s3-bucket aleksandr-burnin-app-storage 
+        --s3-prefix notifications-processor/builds 
+        --output-template-file packaged.yml
+
+  post_build:
+    commands:
+      - echo "Build completed on `date`"
+      - sam validate --template packaged.yml
+
+artifacts:
+  files:
+    - packaged.yml
+    - index.mjs
+  base-directory: lambdas/notifications-processor
