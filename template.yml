@@ -18,7 +18,7 @@ Resources:
   NotificationsProcessorFunction:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: !Sub ${Environment}-notifications-processor
+      FunctionName: !Sub ${Environment}-notifications-processor-${AWS::StackName}
       Handler: index.handler
       Runtime: nodejs20.x
       CodeUri: ./
