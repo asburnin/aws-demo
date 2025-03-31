@@ -15,15 +15,14 @@ phases:
         --template-file template.yml 
         --s3-bucket aleksandr-burnin-app-storage 
         --s3-prefix notifications-processor/builds 
-        --output-template-file packaged.yml
+        --output-template-file packaged_template.yml
 
   post_build:
     commands:
       - echo "Build completed on `date`"
-      - sam validate --template packaged.yml
+      - sam validate --template packaged_template.yml
 
 artifacts:
   files:
-    - packaged.yml
+    - packaged_template.yml
     - index.mjs
-  base-directory: lambdas/notifications-processor
